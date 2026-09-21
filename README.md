@@ -53,6 +53,10 @@ The examples are generated from the same content used for the visible pages. Thi
 
 The service section separates three kinds of work: an SEO/GEO audit, Schema.org structured-data preparation, and ongoing SEO/GEO maintenance. Guides explain the role of public access, useful pages, business identity and the different supporting files. FAQ, About and Contact pages provide the scope and next step without requiring a visitor to interpret the technical formats first.
 
+![LLOPS current pricing package](assets/showcase/screenshot-pricing-2026-09-20.jpg)
+
+*Actual English pricing section captured from the public website on 20 September 2026. It shows the EUR/CZK selector and the advertised setup and monthly-review amounts; no checkout, subscription or payment was initiated.*
+
 The site is generated in **Czech, Spanish and English**, with a separate HTML document for each localized route. Its content model currently produces twelve pages per language: the homepage, three service details, two guides, their listing pages, FAQ, About, Contact and Privacy.
 
 Navigation and text remain available without JavaScript. Language links preserve the corresponding localized page. At an unlocalized entry, the language handler considers an explicit choice, a remembered preference and the browser's accepted languages; already localized URLs keep their language.
@@ -102,6 +106,27 @@ The server records an accepted enquiry before returning its reference. Email not
 
 *Actual English contact form captured from the public website on 12 September 2026. The fields are empty and display their built-in examples; no enquiry was submitted for the capture.*
 
+## A setup payment with a clear boundary
+
+The pricing area offers EUR and CZK display choices and an explicit Stripe payment entry point. Currency preference is kept separately for each page language. The backend selects the permitted plan amount itself; it does not accept a visitor-provided price.
+
+The inspected flow creates a **one-time payment for the setup fee** and returns a hosted Stripe Checkout address. The monthly maintenance price is presented separately. This path does not create an automatic recurring subscription or generate a customer-specific delivery package.
+
+```mermaid
+flowchart TB
+    Pricing["Published plans and EUR / CZK choice"] --> Selection["Plan, language and currency"]
+    Selection -->|"Explicit payment request"| Endpoint["Python checkout endpoint"]
+    Endpoint --> Check["Brand, origin and plan checks"]
+    Check --> Prices["Server-defined amount and currency"]
+    Prices -->|"Create a one-time session"| Stripe["Stripe Checkout API"]
+    Stripe --> URL["Hosted checkout URL"]
+    URL --> Browser["Browser opens Stripe checkout"]
+    Stripe -->|"Signed completion event"| Signature["Webhook signature verification"]
+    Signature -->|"Recognized brand"| Notice["Configured payment email notification"]
+```
+
+Recognized signed payment events trigger a configured email notification. That notification path is separate from the enquiry form's persistent receipt and retry worker. A PaymentIntent endpoint also exists in the service, while the inspected website script uses hosted Checkout. No payment, subscription, production credential or email-delivery result was tested for this showcase; a static return page does not independently verify a payment.
+
 ## Implementation stack
 
 | Layer | Role |
@@ -111,12 +136,13 @@ The server records an accepted enquiry before returning its reference. Email not
 | Browser JavaScript | Enhance language preference, validation, receipt feedback and video behavior. |
 | Python HTTP service | Handle language entry and the validated contact endpoint. |
 | SQLite | Persist accepted enquiries and supporting request-control state privately. |
-| SMTP worker | Send configured enquiry notifications with retries. |
+| SMTP worker | Send configured enquiry notifications with retries; payment-event notifications follow a separate path. |
+| Stripe Checkout | Create a server-priced one-time setup checkout and verify signed payment events. |
 | Pillow and media tooling | Prepare the site's existing branding and web media assets during the build. |
 
 ## Current scope
 
-The website exposes service information, real examples and an enquiry channel. It does not automatically rewrite a customer's CMS, run an AI recommendation engine, generate a customer-specific package from the public form or process a purchase in the reviewed flow.
+The website exposes service information, real examples, an enquiry channel and a setup-payment entry point. It does not automatically rewrite a customer's CMS, run an AI recommendation engine or generate a customer-specific package from the public form. The reviewed checkout is for the initial setup amount, not automatic recurring maintenance billing.
 
 LLOPS explicitly presents its supplementary files as part of broader website work. Their publication does not guarantee search rankings, AI citations, recommendations or customer enquiries. The public examples show the implementation approach; they are not evidence of measured client outcomes.
 
@@ -124,4 +150,4 @@ LLOPS explicitly presents its supplementary files as part of broader website wor
 
 This repository is the public showcase for the LLOPS website: a description of the actual product, genuine interface captures and implementation-based diagrams. Application source, customer enquiries, credentials and operational configuration remain private.
 
-**Last showcase review:** 2026-09-12 (Europe/Paris).
+**Last showcase review:** 2026-09-20 (Europe/Paris).
