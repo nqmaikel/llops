@@ -71,6 +71,7 @@ flowchart TB
     Content["Translated service, guide and FAQ content"] --> Builder
     Catalogue["Nine-resource delivery catalogue"] --> Builder
     Builder --> HTML["Localized HTML pages"]
+    Identity["Verified language-specific LinkedIn company pages"] --> Builder
     Builder --> Metadata["Canonical links, language alternatives and JSON-LD"]
     HTML --> Text["Page Markdown and collected public text"]
     Metadata --> Discovery["Sitemap, crawler rules and public indexes"]
@@ -81,7 +82,7 @@ flowchart TB
     Discovery --> Readers["Search crawlers and compatible tools"]
 ```
 
-The builder also prepares shared navigation, breadcrumbs, social metadata, localized error pages and guide feeds. HTML, metadata and text exports are produced from the same page definitions. The browser adds form feedback, a remembered language selection and the site's background-video behavior.
+The builder also prepares shared navigation, breadcrumbs, social metadata, localized error pages and guide feeds. Verified English and Spanish LinkedIn company-page links now flow into the localized footer, structured organization identity and public text directories; Czech pages currently use the verified primary page. HTML, metadata and text exports are produced from the same page definitions. The browser adds form feedback, a remembered language selection and the site's background-video behavior.
 
 ## An enquiry has a receipt
 
@@ -150,4 +151,4 @@ LLOPS explicitly presents its supplementary files as part of broader website wor
 
 This repository is the public showcase for the LLOPS website: a description of the actual product, genuine interface captures and implementation-based diagrams. Application source, customer enquiries, credentials and operational configuration remain private.
 
-**Last showcase review:** 2026-09-20 (Europe/Paris).
+**Last showcase review:** 2026-09-22 (Europe/Paris).
